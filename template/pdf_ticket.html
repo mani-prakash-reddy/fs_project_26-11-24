@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Ticket - KIA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .ticket-container {
+            border: 2px solid #000;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .flight-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .passenger-info {
+            margin-bottom: 20px;
+        }
+        .barcode {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+        .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .flight-path {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="header">
+            <div class="logo">KIA AIRLINES - BOARDING PASS</div>
+        </div>
+        
+        <div class="passenger-info">
+            <div class="label">PASSENGER NAME</div>
+            <div class="value">{{ t.name }}</div>
+        </div>
+
+        <div class="flight-path">
+            {{ t.from_city }} ✈ {{ t.to_city }}
+        </div>
+
+        <div class="flight-info">
+            <div>
+                <div class="label">FLIGHT</div>
+                <div class="value">{{ t.flight_no }}</div>
+            </div>
+            <div>
+                <div class="label">DATE</div>
+                <div class="value">{{ t.arrival }}</div>
+            </div>
+            <div>
+                <div class="label">GATE</div>
+                <div class="value">B3</div>
+            </div>
+            <div>
+                <div class="label">PNR</div>
+                <div class="value">{{ t.pnr }}</div>
+            </div>
+            <div>
+                <div class="label">CLASS</div>
+                <div class="value">Economy</div>
+            </div>
+            {% if t.seat_no %}
+            <div>
+                <div class="label">SEAT</div>
+                <div class="value">{{ t.seat_no }}</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="barcode">
+            *{{ t.pnr }}* KIA AIRLINES
+        </div>
+    </div>
+</body>
+</html>
