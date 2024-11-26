@@ -85,19 +85,36 @@ def seatcheckin(request):
         pnr = request.POST.get("sepnr")
         seat_no = request.POST.get("seat")
 
-        passenger = Passenger.objects.get(pnr=pnr)
-        passenger.seat_no = seat_no
-        passenger.checkin_status = True
-        passenger.save()
+        try:
+            passenger = Passenger.objects.select_related('flight').get(pnr=pnr)
+            
+            # Check if passenger is already checked in
+            if passenger.checkin_status:
+                return render(request, "web_check.html", 
+                    {"webmsg": "Passenger already checked in"})
 
-        # Decrease the available seats count
-        flight = passenger.flight
-        flight.available_seats -= 1
-        flight.save()
+            flight = passenger.flight
+            
+            # Verify seat is still available
+            if flight.available_seats <= 0:
+                return render(request, "web_check.html", 
+                    {"webmsg": "No seats available"})
 
-        passenger_details = Passenger.objects.select_related("flight").get(pnr=pnr)
+            # Update passenger details
+            passenger.seat_no = seat_no
+            passenger.checkin_status = True
+            passenger.save()
 
-        return render(request, "tic_seat.html", {"t": passenger_details})
+            # Update flight's available seats
+            flight.available_seats = flight.available_seats - 1
+            flight.save()
+
+            passenger_details = Passenger.objects.select_related("flight").get(pnr=pnr)
+            return render(request, "tic_seat.html", {"t": passenger_details})
+
+        except Passenger.DoesNotExist:
+            return render(request, "web_check.html", 
+                {"webmsg": "Invalid PNR"})
 
     elif request.method == "GET" and request.GET.get("format") == "pdf":
         try:
